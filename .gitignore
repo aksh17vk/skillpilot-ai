@@ -7,4 +7,7 @@ build/
 coverage/
 .vite/
 *.log
-.DS_Store
+.DS_Storeserver/uploads/
+server/src/debug-*.ts
+server/src/direct-vector-test.ts
+server/src/test-*.ts
