@@ -6,11 +6,23 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    app.listen(env.PORT, () => {
-      console.log(` Server running on port ${env.PORT}`);
+    const port = Number(env.PORT) || 5000;
+    const server = app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+
+    server.on("error", (error: NodeJS.ErrnoException) => {
+      if (error.code === "EADDRINUSE") {
+        console.error(`Port ${port} is already in use. Please stop the process using it or set a different PORT in your .env file.`);
+        process.exit(1);
+      }
+
+      console.error(error);
+      process.exit(1);
     });
   } catch (error) {
     console.error(error);
+    process.exit(1);
   }
 };
 
