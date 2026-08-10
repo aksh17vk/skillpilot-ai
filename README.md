@@ -1,34 +1,38 @@
-# SKILLPILOT AI
+<img width="1600" height="782" alt="WhatsApp Image 2026-08-10 at 11 26 28" src="https://github.com/user-attachments/assets/fcada71e-bcfb-483c-a92b-4d356fa9738d" /># SKILLPILOT AI
 
 ## Your AI-Powered Career Operating System
 
 **Team Name:** Team Harnex
 
 ---
+## Project Links
+
+💻 GitHub Repository:https://github.com/aksh17vk/skillpilot-ai (Public)
+🎥 Demo Video:https://drive.google.com/file/d/1B9P6WpW4p6YC3UihgQhvBzyfhxlX2Qov/view?usp=drive_link
 
 ## Problem Statement
 
-Students and early-career professionals often struggle to determine whether their current skills are sufficient for their target job roles. Most career guidance platforms focus only on resumes or job listings and do not provide a complete career-development workflow. As a result, learners find it difficult to identify skill gaps, choose the right topics to study, plan their learning schedule, and receive continuous guidance throughout their preparation journey.
+Students and early-career professionals often find it difficult to understand whether their current skills are sufficient for their target job roles. Most career guidance platforms focus only on resumes or job listings and do not provide a complete career-development workflow. As a result, learners struggle to identify skill gaps, choose the right topics to study, plan their learning schedule, and receive continuous guidance throughout their preparation journey.
 
 ---
 
 ## Solution Overview
 
-**SkillPilot AI** is an AI-powered Career Operating System designed to help students and professionals evaluate their career readiness, identify skill gaps, assess their abilities, generate personalized learning roadmaps, and receive AI-driven career guidance.
+**SkillPilot AI** is an AI-powered Career Operating System that helps students and professionals understand their current career readiness, identify skill gaps, assess their abilities, generate personalized learning roadmaps, and receive AI-driven career guidance.
 
-The platform integrates resume analysis, job description analysis, skill-gap detection, personalized learning planning, assessments, PDF roadmap generation, and an AI career assistant into a single workflow. Instead of relying on multiple disconnected tools, users can manage their complete career preparation journey from one platform.
+The platform combines resume analysis, job description analysis, skill-gap detection, personalized learning planning, assessments, PDF roadmap generation, and an AI career assistant into a single workflow. Instead of using multiple disconnected tools, users can manage their career preparation from one place.
 
 ### Key Features
 
-* AI-powered resume analysis with ATS-style insights
-* Job description analysis for target roles
-* Automatic skill-gap identification
-* Personalized learning roadmaps with Auto and Manual modes
-* Roadmap-based assessments
-* Downloadable roadmap in PDF format
-* Hybrid RAG + LLM AI career assistant
-* JWT-based authentication
-* Semantic skill normalization for improved skill matching
+- AI-powered resume analysis with ATS-style insights
+- Job description analysis for target roles
+- Automatic skill-gap identification
+- Personalized learning roadmaps with Auto and Manual modes
+- Roadmap-based assessments
+- Downloadable roadmap in PDF format
+- Hybrid RAG + LLM AI career assistant
+- JWT-based authentication
+- Semantic skill normalization for improved skill matching
 
 ---
 
@@ -37,7 +41,6 @@ The platform integrates resume analysis, job description analysis, skill-gap det
 The live demo is currently under preparation for deployment.
 
 **Demo Link:** To be added after deployment
-**ppt and prototype Link:** https://drive.google.com/drive/folders/1PLjglY3UpjoV_Fk-kMR1wGnjDFCCk7y6?usp=drive_link
 
 ---
 
@@ -45,37 +48,37 @@ The live demo is currently under preparation for deployment.
 
 ### Frontend
 
-* Next.js
-* TypeScript
-* Vite
-* Tailwind CSS
-* TanStack Router
-* shadcn/ui
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- TanStack Router
+- shadcn/ui
 
 ### Backend
 
-* Node.js
-* Express.js
-* TypeScript
-* MongoDB
-* Mongoose
+- Node.js
+- Express.js
+- TypeScript
+- MongoDB
+- Mongoose
 
 ### AI & Intelligence Layer
 
-* Ollama
-* Llama 3.2:3b
-* Retrieval-Augmented Generation (RAG)
-* Embeddings
-* AI-based skill-gap processing
+- Ollama
+- Llama 3.2:3b
+- Retrieval-Augmented Generation (RAG)
+- Embeddings
+- AI-based skill-gap processing
 
 ### Additional Tools
 
-* JWT Authentication
-* Multer (File Uploads)
-* PDFKit (PDF Generation)
-* Git & GitHub
-* Postman
-* MongoDB Atlas
+- JWT Authentication
+- Multer (File Uploads)
+- PDFKit (PDF Generation)
+- Git & GitHub
+- Postman
+- MongoDB Atlas
 
 ---
 
@@ -114,195 +117,102 @@ The live demo is currently under preparation for deployment.
 ```bash
 git clone https://github.com/aksh17vk/skillpilot-ai.git
 cd skillpilot-ai
+Copy-paste this **directly into your `README.md`**:
+
 ```
-
-### 2. Install Dependencies
-
-#### Backend
+## 2. Install Frontend Dependencies
 
 ```bash
-cd backend
+cd client
+npm install
+````
+
+---
+
+## 3. Install Backend Dependencies
+
+Open another terminal:
+
+```bash
+cd server
 npm install
 ```
 
-#### Frontend
+---
 
-```bash
-cd ../frontend
-npm install
-```
+## 4. Configure Environment Variables
 
-### 3. Configure Environment Variables
+Create the required `.env` files for the frontend and backend.
 
-Create a `.env` file inside the backend folder:
+### Backend Configuration
+
+Example:
 
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_atlas_uri
-JWT_SECRET=your_secret_key
-JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:5173
-
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2:3b
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+JWT_REFRESH_SECRET=your_refresh_token_secret
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
-### 4. Start Ollama
+> **Important:** Use the actual environment variable names present in your project's configuration files.
 
-Install Ollama from https://ollama.com and run:
+**Never commit API keys, passwords, database credentials, or other secrets to GitHub.**
 
-```bash
-ollama pull llama3.2:3b
-ollama run llama3.2:3b
-```
+---
 
-### 5. Run the Backend
+## 5. Start the Backend
 
 ```bash
-cd backend
+cd server
 npm run dev
 ```
 
-Backend runs at: `http://localhost:5000`
+---
+## 6. Start the Frontend
 
-### 6. Run the Frontend
+Open another terminal:
 
 ```bash
-cd frontend
+cd client
 npm run dev
 ```
+Then open the local URL shown by Next.js, typically:
 
-Frontend runs at: `http://localhost:8080`
+**[http://localhost:3000](http://localhost:3000)**
 
----
+````
 
-## API Overview
-
-### Authentication
-
-* `POST /api/auth/register`
-* `POST /api/auth/login`
-* `GET /api/auth/me`
-
-### Resume Analysis
-
-* `POST /api/resume/upload`
-
-### Job Analysis
-
-* `POST /api/job/analyze`
-
-### Skill Gap Analysis
-
-* `POST /api/skill-gap/analyze`
-
-### Roadmap
-
-* `POST /api/roadmap/generate`
-* `GET /api/roadmap/:id`
-* `GET /api/roadmap/:id/pdf`
-
-### Assessment
-
-* `POST /api/assessment/generate`
-* `POST /api/assessment/submit`
-
-### AI Assistant
-
-* `POST /api/assistant/chat`
-
----
-
-## Example Test Flow
-
-1. Register a new account.
-2. Login and obtain JWT token.
-3. Upload a sample resume PDF.
-4. Submit a target job description.
-5. Generate skill-gap report.
-6. Create a learning roadmap.
-7. Download roadmap PDF.
-8. Start an assessment.
-9. Chat with AI assistant.
-
----
-
-## Project Structure
-
-```text
-skillpilot-ai/
-├── backend/
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   ├── models/
-│   │   ├── middleware/
-│   │   └── utils/
-│   ├── uploads/
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── routes/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   └── lib/
-│   └── package.json
-└── README.md
-```
-
----
-
-## Deployment
-
-### Backend
-
-* Deploy on **Render**
-* Add environment variables in Render dashboard
-* Connect MongoDB Atlas
-
-### Frontend
-
-* Deploy on **Vercel**
-* Set `VITE_API_URL` to backend API URL
-
----
-
+**Important:** The outer ` ```markdown ` is only for this chat. When you paste into GitHub, paste the content starting from `## 2. Install Frontend Dependencies` and **do not include the outer markdown fence**.
+````
 ## Future Enhancements
 
-* AI mock interviews with voice interaction
-* Resume optimization suggestions
-* Company-specific preparation plans
-* Interview question generator
-* Peer learning community
-* Mobile application
-* Progress analytics dashboard
-* Multi-language support
+Planned improvements include:
+
+-  Google OAuth
+-  GitHub OAuth
+-  Email verification
+-  Forgot / reset password
+-  Redis caching
+-  Docker deployment
+-  RAG-based vector database
+-  Semantic search
+-  AI interview simulator
+-  Job recommendation engine
+-  
+##  Conclusion
+
+**SkillPilot AI** bridges the gap between **education and industry requirements** by combining resume intelligence, job analysis, skill-gap detection, personalized learning roadmaps, assessments, and AI mentoring into one career readiness platform.
+
+Its modular architecture also provides a strong foundation for future integrations such as:
+
+-  OAuth authentication
+-  Docker deployment
+-  Redis caching
+-  Semantic search
+-  RAG-based intelligent retrieval
+
+The platform is designed to evolve into a **personalized AI-powered career companion**, helping users continuously understand their skills, identify gaps, learn relevant technologies, and become more industry-ready.
 
 ---
-
-## Achievements
-
-* Built a complete end-to-end AI career guidance workflow.
-* Implemented semantic skill matching using AI processing.
-* Integrated roadmap generation with assessment creation.
-* Added downloadable PDF roadmap support.
-* Developed a hybrid AI assistant using RAG and LLM techniques.
-
----
-
-## License
-
-This project is developed for educational and hackathon purposes by **Team Harnex**.
-
----
-
-## Contact
-
-For queries, collaboration, or feedback:
-
-**Aksh Tiwari**
-Team Leader – Team Harnex
-GitHub: https://github.com/aksh17vk
-Email: [taksh9655@gmail.com](mailto:taksh9655@gmail.com)
