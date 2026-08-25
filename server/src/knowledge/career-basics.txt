@@ -1,0 +1,13 @@
+Docker volumes are used for persistent storage.
+
+Node.js is a JavaScript runtime used for backend development.
+
+React is a frontend library for building user interfaces.
+
+Kubernetes is used for container orchestration.
+
+CI/CD automates testing and deployment pipelines.
+
+AWS is a cloud platform providing compute, storage, and networking services.
+
+For interview preparation, focus on projects, system design, JavaScript fundamentals, and backend concepts.
