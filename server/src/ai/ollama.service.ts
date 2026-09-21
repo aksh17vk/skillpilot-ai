@@ -1,9 +1,43 @@
-import ollama from "ollama";
+import {
+  ollama,
+  CHAT_MODEL,
+  KEEP_ALIVE,
+  modelOptions,
+  clampText,
+} from "./ollama.client.js";
+
+const stringArray = {
+  type: "array",
+  items: { type: "string" },
+};
+
+// Constrains decoding to this shape: no markdown, no preamble tokens
+const RESUME_SCHEMA = {
+  type: "object",
+  properties: {
+    atsScore: { type: "number" },
+    skills: stringArray,
+    strengths: stringArray,
+    weaknesses: stringArray,
+    missingSkills: stringArray,
+    suggestions: stringArray,
+  },
+  required: [
+    "atsScore",
+    "skills",
+    "strengths",
+    "weaknesses",
+    "missingSkills",
+    "suggestions",
+  ],
+};
 
 class OllamaService {
   async analyzeResume(resumeText: string) {
     const response = await ollama.chat({
-      model: "llama3.2:3b",
+      model: CHAT_MODEL,
+      format: RESUME_SCHEMA,
+      keep_alive: KEEP_ALIVE,
       messages: [
         {
           role: "system",
@@ -25,14 +59,17 @@ Return exactly this structure:
   "suggestions": []
 }
 
+Keep every list item short (one sentence max).
+
 Resume:
-${resumeText}
+${clampText(resumeText, 9000)}
 `,
         },
       ],
-      options: {
+      options: modelOptions({
         temperature: 0.1,
-      },
+        num_predict: 700,
+      }),
     });
 
     let text = response.message.content.trim();

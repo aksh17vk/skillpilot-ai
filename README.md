@@ -67,6 +67,21 @@ The live demo is currently under preparation for deployment.
 - Embeddings
 - AI-based skill-gap processing
 
+#### Ollama GPU / Performance Settings
+
+All Ollama calls go through `server/src/ai/ollama.client.ts`, which offloads every model layer to the GPU, keeps the models loaded in VRAM, and preloads them when the server starts (the startup log prints `Ollama model ready: ... (100% GPU)`). Optional `server/.env` overrides:
+
+| Variable             | Default                  | Purpose                                              |
+| -------------------- | ------------------------ | ---------------------------------------------------- |
+| `OLLAMA_HOST`        | `http://127.0.0.1:11434` | Ollama server address                                |
+| `OLLAMA_MODEL`       | `llama3.2:3b`            | Generation model                                     |
+| `OLLAMA_EMBED_MODEL` | `nomic-embed-text`       | Embedding model                                      |
+| `OLLAMA_KEEP_ALIVE`  | `30m`                    | How long models stay in VRAM (`-1` = forever)        |
+| `OLLAMA_NUM_GPU`     | `99`                     | Layers offloaded to GPU (99 = all)                   |
+| `OLLAMA_NUM_CTX`     | `4096`                   | Context window (lower it if VRAM is short)           |
+
+Verify GPU usage any time with `ollama ps` (the `PROCESSOR` column should read `100% GPU`).
+
 ### Additional Tools
 
 - JWT Authentication

@@ -81,7 +81,7 @@ class RoadmapService {
         studyHoursPerDay: data.dailyHours || 2,
         durationDays: data.durationDays || 30,
         missingSkills,
-        days: roadmap?.days || roadmap?.schedule || [],
+        days: roadmap?.days || [],
       });
     } catch (e) {
       console.error("Failed to persist roadmap:", e);

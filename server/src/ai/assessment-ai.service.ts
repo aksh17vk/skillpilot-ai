@@ -1,4 +1,35 @@
-import ollama from "ollama";
+import {
+  ollama,
+  CHAT_MODEL,
+  KEEP_ALIVE,
+  modelOptions,
+} from "./ollama.client.js";
+
+const ASSESSMENT_SCHEMA = {
+  type: "object",
+  properties: {
+    questions: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          question: { type: "string" },
+          options: {
+            type: "array",
+            items: { type: "string" },
+          },
+          correctAnswer: { type: "string" },
+        },
+        required: [
+          "question",
+          "options",
+          "correctAnswer",
+        ],
+      },
+    },
+  },
+  required: ["questions"],
+};
 
 class AssessmentAIService {
   async generate(
@@ -26,9 +57,14 @@ Return ONLY valid JSON:
 }`;
 
     const response = await ollama.generate({
-      model: "llama3.2:3b",
+      model: CHAT_MODEL,
       prompt,
-      options: { temperature: 0.2 },
+      format: ASSESSMENT_SCHEMA,
+      keep_alive: KEEP_ALIVE,
+      options: modelOptions({
+        temperature: 0.2,
+        num_predict: 900,
+      }),
     });
 
     let text = response.response

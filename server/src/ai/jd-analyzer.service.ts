@@ -1,4 +1,21 @@
-import ollama from "ollama";
+import {
+  ollama,
+  CHAT_MODEL,
+  KEEP_ALIVE,
+  modelOptions,
+  clampText,
+} from "./ollama.client.js";
+
+const JD_SCHEMA = {
+  type: "object",
+  properties: {
+    requiredSkills: {
+      type: "array",
+      items: { type: "string" },
+    },
+  },
+  required: ["requiredSkills"],
+};
 
 class JDAnalyzerService {
   async analyze(jobDescription: string) {
@@ -12,16 +29,18 @@ Return ONLY valid JSON in this format:
 }
 
 Job Description:
-${jobDescription}
+${clampText(jobDescription, 10000)}
 `;
 
     const response = await ollama.generate({
-      model: "llama3.2:3b",
+      model: CHAT_MODEL,
       prompt,
-      options: {
+      format: JD_SCHEMA,
+      keep_alive: KEEP_ALIVE,
+      options: modelOptions({
         temperature: 0,
-        num_predict: 256,
-      },
+        num_predict: 400,
+      }),
     });
 
     let text = response.response

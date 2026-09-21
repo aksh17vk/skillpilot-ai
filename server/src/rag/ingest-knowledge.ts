@@ -28,18 +28,27 @@ async function ingest() {
   // Remove old docker knowledge
   await Knowledge.deleteMany({ skill: "docker" });
 
-  for (const chunk of chunks) {
-    console.log("Embedding chunk:", chunk.slice(0, 50));
+  // Embed in GPU batches and insert each batch in one DB write
+  const BATCH_SIZE = 32;
 
-    const embedding = await embedService.embedText(chunk);
+  for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
+    const batch = chunks.slice(i, i + BATCH_SIZE);
 
-    await Knowledge.create({
-      text: chunk,
-      skill: "docker",
-      type: "concept",
-      source: "docker.txt",
-      embedding,
-    });
+    console.log(
+      `Embedding chunks ${i + 1}-${i + batch.length}`
+    );
+
+    const embeddings = await embedService.embedMany(batch);
+
+    await Knowledge.insertMany(
+      batch.map((chunk, j) => ({
+        text: chunk,
+        skill: "docker",
+        type: "concept",
+        source: "docker.txt",
+        embedding: embeddings[j],
+      }))
+    );
   }
 
   console.log("Docker knowledge ingested successfully ");

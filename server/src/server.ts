@@ -1,6 +1,7 @@
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
 import { env } from "./config/env.js";
+import { warmupOllama } from "./ai/ollama.client.js";
 
 const startServer = async () => {
   try {
@@ -9,6 +10,9 @@ const startServer = async () => {
     const port = Number(env.PORT) || 5000;
     const server = app.listen(port, () => {
       console.log(`Server running on port ${port}`);
+
+      // Preload models into GPU memory in the background
+      void warmupOllama();
     });
 
     server.on("error", (error: NodeJS.ErrnoException) => {

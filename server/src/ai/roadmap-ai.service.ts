@@ -1,4 +1,37 @@
-import ollama from "ollama";
+import {
+  ollama,
+  CHAT_MODEL,
+  KEEP_ALIVE,
+  modelOptions,
+} from "./ollama.client.js";
+
+// The model writes at most this many unique days; longer roadmaps
+// are filled by cycling them (see below). Keeps generation inside
+// the token budget instead of truncating into invalid JSON.
+const MAX_GENERATED_DAYS = 14;
+
+const ROADMAP_SCHEMA = {
+  type: "object",
+  properties: {
+    title: { type: "string" },
+    days: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          day: { type: "number" },
+          focus: { type: "string" },
+          tasks: {
+            type: "array",
+            items: { type: "string" },
+          },
+        },
+        required: ["day", "focus", "tasks"],
+      },
+    },
+  },
+  required: ["title", "days"],
+};
 
 class RoadmapAIService {
   async generate(data: {
@@ -10,6 +43,11 @@ class RoadmapAIService {
     daysPerWeek: number;
     durationDays: number;
   }) {
+    const generatedDays = Math.max(
+      1,
+      Math.min(data.durationDays, MAX_GENERATED_DAYS)
+    );
+
     const prompt = `
 You are an expert career mentor.
 
@@ -27,30 +65,27 @@ Return ONLY valid JSON with this exact structure:
 
 {
   "title": "Roadmap title",
-  "dailyHours": ${data.dailyHours},
-  "preferredStudyTime": "${data.preferredStudyTime}",
-  "daysPerWeek": ${data.daysPerWeek},
   "days": [
     {
       "day": 1,
       "focus": "Topic name",
-      "schedule": "${data.preferredStudyTime}",
-      "tasks": ["Task 1", "Task 2"],
-      "hours": ${data.dailyHours}
+      "tasks": ["Task 1", "Task 2"]
     }
   ]
 }
 
-Generate concise tasks.`;
+Generate exactly ${generatedDays} days with 2-3 concise tasks each.`;
 
     try {
       const response = await ollama.generate({
-        model: "llama3.2:3b",
+        model: CHAT_MODEL,
         prompt,
-        options: {
+        format: ROADMAP_SCHEMA,
+        keep_alive: KEEP_ALIVE,
+        options: modelOptions({
           temperature: 0.2,
-          num_predict: 1200,
-        },
+          num_predict: 1500,
+        }),
       });
 
       let text = response.response || "";
@@ -71,70 +106,51 @@ Generate concise tasks.`;
 
       const parsed = JSON.parse(text);
 
-      // Ensure exact number of days
-const requestedDays = data.durationDays;
-
-if (parsed.days.length < requestedDays) {
-  const existing = [...parsed.days];
-
-  for (
-    let i = existing.length + 1;
-    i <= requestedDays;
-    i++
-  ) {
-    const template =
-      existing[(i - 1) % existing.length];
-
-    parsed.days.push({
-      day: i,
-      focus: template.focus,
-      schedule: template.schedule,
-      tasks: template.tasks,
-      hours: template.hours,
-    });
-  }
-}
-
-// Trim if AI generated extra days
-parsed.days = parsed.days.slice(
-  0,
-  requestedDays
-);
-
-      // Ensure required fields exist
-      parsed.title =
-        parsed.title ||
-        `${data.durationDays}-Day Roadmap for ${data.targetRole}`;
-
-      parsed.dailyHours =
-        parsed.dailyHours || data.dailyHours;
-
-      parsed.preferredStudyTime =
-        parsed.preferredStudyTime ||
-        data.preferredStudyTime;
-
-      parsed.daysPerWeek =
-        parsed.daysPerWeek || data.daysPerWeek;
-
-      parsed.days = Array.isArray(parsed.days)
-        ? parsed.days
+      const generated: any[] = Array.isArray(parsed.days)
+        ? parsed.days.filter((d: any) => d?.focus)
         : [];
 
       // Guarantee at least one day
-      if (parsed.days.length === 0) {
-        parsed.days.push({
-          day: 1,
-          focus: data.missingSkills[0] || "Career Preparation",
-          schedule: data.preferredStudyTime,
+      if (generated.length === 0) {
+        generated.push({
+          focus:
+            data.missingSkills[0] || "Career Preparation",
           tasks: [
             "Study fundamentals",
             "Complete one practical exercise",
           ],
+        });
+      }
+
+      // Ensure exact number of days (cycle the generated ones).
+      // schedule/hours are constants, so they are filled here
+      // instead of making the model repeat them for every day.
+      const days = [];
+
+      for (let i = 1; i <= data.durationDays; i++) {
+        const template =
+          generated[(i - 1) % generated.length];
+
+        days.push({
+          day: i,
+          focus: template.focus,
+          schedule: data.preferredStudyTime,
+          tasks: Array.isArray(template.tasks)
+            ? template.tasks
+            : [],
           hours: data.dailyHours,
         });
       }
 
-      return parsed;
+      return {
+        title:
+          parsed.title ||
+          `${data.durationDays}-Day Roadmap for ${data.targetRole}`,
+        dailyHours: data.dailyHours,
+        preferredStudyTime: data.preferredStudyTime,
+        daysPerWeek: data.daysPerWeek,
+        days,
+      };
     } catch (error) {
       console.error(
         "Roadmap generation error:",

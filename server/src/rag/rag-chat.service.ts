@@ -1,4 +1,10 @@
-import ollama from "ollama";
+import {
+  ollama,
+  CHAT_MODEL,
+  KEEP_ALIVE,
+  modelOptions,
+  clampText,
+} from "../ai/ollama.client.js";
 import vectorSearchService from "./vector-search.service.js";
 
 class RAGChatService {
@@ -11,9 +17,10 @@ class RAGChatService {
       let sources: string[] = [];
 
       if (docs.length > 0) {
-        const context = docs
-          .map((d) => d.content)
-          .join("\n\n");
+        const context = clampText(
+          docs.map((d) => d.content).join("\n\n"),
+          8000
+        );
 
         sources = docs.map((d) => d.source);
 
@@ -44,12 +51,13 @@ Answer:
       }
 
       const response = await ollama.generate({
-        model: "llama3.2:3b",
+        model: CHAT_MODEL,
         prompt,
-        options: {
+        keep_alive: KEEP_ALIVE,
+        options: modelOptions({
           temperature: 0.2,
           num_predict: 250,
-        },
+        }),
       });
 
       return {
