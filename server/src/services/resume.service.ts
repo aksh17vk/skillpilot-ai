@@ -121,7 +121,7 @@ if (
   }
 }
     } catch (error) {
-      console.error("Gemini JSON Parse Error:", cleaned);
+      console.error("Ollama JSON Parse Error:", cleaned);
 
       throw new Error(
         "AI returned an invalid response. Please try again."
